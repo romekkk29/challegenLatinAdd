@@ -1,0 +1,34 @@
+.navWrapper{
+    display: flex;
+    max-width: 100vw;
+    overflow: hidden;
+}
+.navItemsContainer{
+    overflow-y: auto;
+}
+.content{
+    flex-grow: 1;
+    overflow: hidden;
+}
+.logoContainer{
+    display: flex;
+    align-items: center;
+    justify-content: center
+}
+.logoContainer img{
+    max-width: 150px;
+}
+
+.toolbar .title{
+    flex: 1
+}
+
+.welcomeText{
+    margin-right: 10px;
+}
+
+@media screen and (min-width:768px) {
+    .logoContainer img{
+        max-width: 100%;
+    }
+}

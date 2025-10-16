@@ -1,0 +1,27 @@
+.loginFormContainer{
+    width: 95%;
+    padding: 18px;
+    z-index: 10;
+}
+
+.logoContainer{
+    margin-bottom: 40px;
+    display: flex;
+    justify-content: center;
+}
+
+.logo{
+    width: 210px;
+}
+
+.loginTitle{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+@media screen and (min-width: 310px) {
+    .loginFormContainer{
+        width: 300px;
+    }
+}

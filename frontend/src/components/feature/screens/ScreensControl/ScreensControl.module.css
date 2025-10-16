@@ -1,0 +1,30 @@
+.screensControlContainer{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.screensControlHeader{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    gap: 15px;
+}
+
+.screensControlHeader h1{
+    font-weight: 600;
+    color: #252525;
+}
+
+.titleSpan{
+    display: none;
+}
+
+@media screen and (min-width: 768px) {
+
+    .titleSpan{
+        display: block;
+    }
+}

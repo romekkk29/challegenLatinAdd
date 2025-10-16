@@ -1,0 +1,16 @@
+{
+  "name": "challenge-front",
+  "version": "2.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "serve": "node app.js"
+  },
+  "author": "Agustin Peruzzi",
+  "license": "ISC",
+  "dependencies": {
+    "better-sqlite3": "12.4.1",
+    "cors": "2.8.5",
+    "express": "5.1.0"
+  }
+}

@@ -1,0 +1,29 @@
+:root{
+    --background: #ffffff;
+    --principal-color: #0096F5;
+    --secondary-color: #163B78;
+}
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+a{
+    color: #000;
+    text-decoration: none;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f7fafc !important;
+}
+
+h1, h2, h3, h4, h5, h6{
+    font-family: 'Poppins', sans-serif;
+}
+
+h1 {
+    font-size: 32px;
+}

@@ -1,0 +1,17 @@
+.loginFormInputsContainer{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 15px;
+    gap: 10px;
+}
+
+.buttonFormContainer{
+    display: flex;
+    width: 100%;
+    justify-content: flex-end;
+}
+
+.error{
+    width: 100%;
+}

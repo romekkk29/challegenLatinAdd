@@ -1,0 +1,8 @@
+.listScreensWrapper {
+    min-height: calc(62px * 10);
+}
+
+.listScreens{
+    padding: 0 !important;
+}
+
