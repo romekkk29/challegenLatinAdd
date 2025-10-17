@@ -32,11 +32,57 @@ function initializeDatabase() {
             resolution_width INTEGER NOT NULL,
             type TEXT NOT NULL,
             picture_url TEXT,
+            rules TEXT,
             FOREIGN KEY (user_id) REFERENCES users(id)
         );
 
-        INSERT INTO users (email,password,full_name)
-	        VALUES ('admin@latinad.com','1234567890','System Admin');
+        CREATE TABLE IF NOT EXISTS sales (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            date DATE NOT NULL,
+            value INTEGER NOT NULL
+        );
+
+        INSERT OR IGNORE INTO users (id,email,password,full_name)
+	        VALUES (1,'admin@latinad.com','1234567890','System Admin');
+
+        INSERT INTO sales (date, value)
+        SELECT date_val, value_val
+        FROM (
+            SELECT DATE('2025-01-01') AS date_val, 847 AS value_val UNION ALL
+            SELECT DATE('2025-01-02'), 1023 UNION ALL
+            SELECT DATE('2025-01-03'), 1315 UNION ALL
+            SELECT DATE('2025-01-04'), 784 UNION ALL
+            SELECT DATE('2025-01-05'), 1169 UNION ALL
+            SELECT DATE('2025-01-06'), 1473 UNION ALL
+            SELECT DATE('2025-01-07'), 659 UNION ALL
+            SELECT DATE('2025-01-08'), 1427 UNION ALL
+            SELECT DATE('2025-01-09'), 936 UNION ALL
+            SELECT DATE('2025-01-10'), 1201 UNION ALL
+            SELECT DATE('2025-01-11'), 1115 UNION ALL
+            SELECT DATE('2025-01-12'), 1322 UNION ALL
+            SELECT DATE('2025-01-13'), 1005 UNION ALL
+            SELECT DATE('2025-01-14'), 783 UNION ALL
+            SELECT DATE('2025-01-15'), 1490 UNION ALL
+            SELECT DATE('2025-01-16'), 1310 UNION ALL
+            SELECT DATE('2025-01-17'), 890 UNION ALL
+            SELECT DATE('2025-01-18'), 725 UNION ALL
+            SELECT DATE('2025-01-19'), 1422 UNION ALL
+            SELECT DATE('2025-01-20'), 1306 UNION ALL
+            SELECT DATE('2025-01-21'), 1188 UNION ALL
+            SELECT DATE('2025-01-22'), 944 UNION ALL
+            SELECT DATE('2025-01-23'), 1123 UNION ALL
+            SELECT DATE('2025-01-24'), 1479 UNION ALL
+            SELECT DATE('2025-01-25'), 1287 UNION ALL
+            SELECT DATE('2025-01-26'), 973 UNION ALL
+            SELECT DATE('2025-01-27'), 1365 UNION ALL
+            SELECT DATE('2025-01-28'), 1067 UNION ALL
+            SELECT DATE('2025-01-29'), 894 UNION ALL
+            SELECT DATE('2025-01-30'), 1230 UNION ALL
+            SELECT DATE('2025-01-31'), 1156
+        ) AS new_data
+        WHERE NOT EXISTS (
+            SELECT 1 FROM sales s WHERE s.date = new_data.date_val
+        );
     `);
 }
 
@@ -192,7 +238,7 @@ app.post('/display', async (req, res) => {
         const userId = await getUserIdFromToken(req, res);
         if (userId === -1) return;
 
-        const { name, description, price_per_day, resolution_height, resolution_width, type } = req.body;
+        const { name, description, price_per_day, resolution_height, resolution_width, type, rules } = req.body;
         if (!name || !description || !price_per_day || !resolution_height || !resolution_width || !type) {
             return res.status(400).send('Missing one or more required fields');
         }
@@ -200,8 +246,8 @@ app.post('/display', async (req, res) => {
         const picture_url = getDisplayImage(type);
 
         const result = query(
-            'INSERT INTO displays (name, description, user_id, price_per_day, resolution_height, resolution_width, type, picture_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-            [name, description, userId, price_per_day, resolution_height, resolution_width, type, picture_url]
+            'INSERT INTO displays (name, description, user_id, price_per_day, resolution_height, resolution_width, type, picture_url, rules) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            [name, description, userId, price_per_day, resolution_height, resolution_width, type, picture_url, rules]
         );
 
         const inserted = query('SELECT * FROM displays WHERE id = ?', [result.lastInsertRowid]);
@@ -218,7 +264,7 @@ app.put('/display/:id', async (req, res) => {
         const userId = await getUserIdFromToken(req, res);
         if (userId === -1) return;
 
-        const { name, description, price_per_day, resolution_height, resolution_width, type } = req.body;
+        const { name, description, price_per_day, resolution_height, resolution_width, type, rules } = req.body;
         if (!name || !description || !price_per_day || !resolution_height || !resolution_width || !type) {
             return res.status(400).send('Missing one or more required fields');
         }
@@ -226,8 +272,8 @@ app.put('/display/:id', async (req, res) => {
         const picture_url = getDisplayImage(type);
 
         const result = query(
-            'UPDATE displays SET name = ?, description = ?, price_per_day = ?, resolution_height = ?, resolution_width = ?, type = ?, picture_url = ? WHERE id = ? AND user_id = ?',
-            [name, description, price_per_day, resolution_height, resolution_width, type, picture_url, req.params.id, userId]
+            'UPDATE displays SET name = ?, description = ?, price_per_day = ?, resolution_height = ?, resolution_width = ?, type = ?, picture_url = ?, rules = ? WHERE id = ? AND user_id = ?',
+            [name, description, price_per_day, resolution_height, resolution_width, type, picture_url, rules, req.params.id, userId]
         );
 
         if (result.changes === 0) {
@@ -260,9 +306,20 @@ app.delete('/display/:id', async (req, res) => {
     }
 });
 
-
-
-
+// Get sale stats
+app.get('/sales', async (req, res) => {
+    try {
+        const result = query('SELECT * FROM sales', []);
+        if (result.length === 0) {
+            res.status(404).send('Not Found');
+        } else {
+            res.json(result);
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error getting sales');
+    }
+});
 
 // Start app
 app.listen(PORT, () => {
