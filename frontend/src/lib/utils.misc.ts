@@ -15,8 +15,7 @@ export const navLinks = [
         {
             path: '/report',
             name: 'Reportes',
-            icon: AssessmentOutlinedIcon,
-            disabled: true
+            icon: AssessmentOutlinedIcon
         },
         {
             path: '/companies',

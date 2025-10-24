@@ -7,15 +7,16 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import '@fontsource/poppins';
 import Router from './Router';
-import AuthProvider from '@contexts/authContext';
+import { Provider } from 'react-redux'
+import { store } from '@redux/store'
 import { Toaster } from 'sonner';
 
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-      <AuthProvider>
+      <Provider store={store}>
         <Toaster richColors position="top-center" />
         <Router/>
-      </AuthProvider>
+      </Provider>
   </React.StrictMode>,
 )

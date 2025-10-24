@@ -1,11 +1,11 @@
 import Profile from '@components/feature/profile/Profile/Profile';
 import styles from './ProfileView.module.css'
+import {useAppSelector } from '@hooks/useAuth'
 
-import { useAuth } from '@hooks/useAuth';
 import EmptyDataAdvice from '@components/common/EmptyDataAdvice/EmptyDataAdvice';
 
 const ProfileView = () => {
-    const {user} = useAuth()
+    const { user } = useAppSelector(state => state.auth)
 
     return (
     <div className={styles.profileContainer}>

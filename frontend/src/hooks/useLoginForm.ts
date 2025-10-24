@@ -1,5 +1,7 @@
 import { ChangeEvent, FormEvent, useCallback, useEffect, useRef, useState } from "react";
-import { useAuth } from "./useAuth";
+import {useAppDispatch,useAppSelector } from '@hooks/useAuth'
+import { login } from '@redux/authSlice'
+import { AuthBody } from './../types/user'
 import { useNavigate } from "react-router-dom";
 import { Errors } from "types/misc";
 
@@ -9,7 +11,10 @@ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const useLoginForm = () => {
   //Utilizamos login de nuestro useAuth
-  const {login, error, loading} = useAuth()
+  const dispatch = useAppDispatch()
+  const { loading, error } = useAppSelector(state => state.auth)
+
+
   const navigation = useNavigate()
   //Declaramos el state que almacenará los valores del formulario
   const [values, setValues] = useState({
@@ -19,6 +24,12 @@ const useLoginForm = () => {
   //Declaramos el state que almacenará los errores que tengamos en el form
   const [inputErrors, setInputErrors] = useState<Errors>({})
   const isFirstInput = useRef(true)
+
+  const handleLogin = (body: AuthBody, callback?: () => void) => {
+    dispatch(login(body)).unwrap()
+      .then(() => callback && callback())
+      .catch(() => {})
+  }
 
   //Función para enviar el formulario
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -30,7 +41,7 @@ const useLoginForm = () => {
 
     if (!hasErrors && !fieldsEmpty) {
       //Ejecutamos el submit
-      login(values, ()=>{
+      handleLogin(values, ()=>{
         navigation('/')
       })
     }

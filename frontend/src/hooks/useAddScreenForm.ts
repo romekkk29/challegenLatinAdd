@@ -1,7 +1,7 @@
 import { SelectChangeEvent } from "@mui/material";
 import { ChangeEvent, useState } from "react";
 import { Errors } from "types/misc";
-import { ScreenType } from "types/screen";
+import { ScreenAvailableHours, ScreenType } from "types/screen";
 
 type FormValues = {
     name: string,
@@ -9,11 +9,17 @@ type FormValues = {
     pricePerDay: string,
     resolutionHeight: string,
     resolutionWidth: string,
-    type: ScreenType
+    type: ScreenType,
+    rules:ScreenAvailableHours[]
 }
 
 type Args = {
     initialValues: FormValues
+}
+
+const initalSelectedDay:ScreenAvailableHours={
+    day:"Lunes",
+    enable:false
 }
 
 export const useAddScreenForm = ({initialValues}:Args)=>{
@@ -23,8 +29,11 @@ export const useAddScreenForm = ({initialValues}:Args)=>{
     //Declaramos el state que almacenará los errores que tengamos en el form
     const [inputErrors, setInputErrors] = useState<Errors>({})
     //Validamos un error en particular del form
-    const [error, setError] = useState<string | null>(null)
-    
+    const [error, setError] = useState<string | null>(null)     
+    //Declaramos el state que abre o cierra modal de horas de funcionamiento
+    const [openModalSetHour, setOpenModalSetHour] = useState(false)
+    //Declaramos el state que gestiona el objeto dia para setear rules (dia/hora de funcionamiento pantalla)
+    const [daySelected, setDaySelected] = useState<ScreenAvailableHours>(initalSelectedDay);    
     const resetValues = ()=>{
         setValues(initialValues)
     }
@@ -36,7 +45,7 @@ export const useAddScreenForm = ({initialValues}:Args)=>{
         const hasErrors = Object.keys(inputErrors).length > 0
         //Validamos que los inputs no estén vacios
         const fieldsEmpty = name == '' || description == '' || pricePerDay == '' || resolutionHeight == '' || resolutionWidth == ''
-
+        
         if (fieldsEmpty) {
             setError("Todos los campos son obligatorios. Por favor completalos.")
             return
@@ -46,7 +55,7 @@ export const useAddScreenForm = ({initialValues}:Args)=>{
 
 
         if (!hasErrors) {
-            callback(values)
+            callback(values);
         }
     };
 
@@ -98,11 +107,25 @@ export const useAddScreenForm = ({initialValues}:Args)=>{
             ...prev,
             [name]: value,
         }));
+    }
+    //Manejo de cambios del dia seleccionado
+    const changeRulesSelected = (daySelected:ScreenAvailableHours) => {
+        setValues((prev) => ({
+            ...prev,
+            rules: prev.rules.map((item) =>
+                item.day === daySelected.day ? daySelected : item)
+        }))  
+    }
+    const handleOpenModalSetHour = (rule:ScreenAvailableHours) => {
+        setDaySelected(values.rules.filter(el=>el.day===rule.day)[0])
+        setOpenModalSetHour(true)
     };
-
-
-
-
-
-    return {values, onChange, onSubmit, inputErrors, error, resetValues}
-}
+    const handleCloseModalSetHour = () => {
+        setOpenModalSetHour(false)
+    };
+    const handleSaveDaySelected= () => {
+          changeRulesSelected(daySelected)
+          setOpenModalSetHour(false)
+    };
+    return {values, onChange, onSubmit, inputErrors, error, resetValues, handleSaveDaySelected,openModalSetHour,daySelected,handleOpenModalSetHour,setDaySelected,handleCloseModalSetHour}
+    }

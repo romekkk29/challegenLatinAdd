@@ -61,19 +61,22 @@ const fetchOneScreens = async ({id, token}:{id:number, token:string}): Promise<S
         }
     }
 
-    const data:Screen = await res.json()
-
+    const preData:any = await res.json()
+    const data: Screen = {
+        ...preData,
+        rules: JSON.parse(preData.rules),
+    };
     return data
 }
 
 const createScreen = async (screen:Screen, token:string):Promise<Screen>=>{
-    const {price_per_day, resolution_height, resolution_width} = screen
+    const {price_per_day, resolution_height, resolution_width,rules} = screen
 
     //Parseamos los valores a enteros
     const pricePerDay = parseInt(price_per_day)
     const resolutionHeight = parseInt(resolution_height)
     const resolutionWidth = parseInt(resolution_width)
-
+    const rulesString = JSON.stringify(rules)
 
     //Realiazamos una llamada a nuestra api
     const res = await fetch(`${uri}/display`,{
@@ -87,7 +90,8 @@ const createScreen = async (screen:Screen, token:string):Promise<Screen>=>{
             ...screen,
             price_per_day: pricePerDay,
             resolution_height: resolutionHeight,
-            resolution_width: resolutionWidth
+            resolution_width: resolutionWidth,
+            rules:rulesString
         }),
     })
 
@@ -109,12 +113,13 @@ const createScreen = async (screen:Screen, token:string):Promise<Screen>=>{
 
 const updateScreen = async (screen:Screen, token:string):Promise<Screen>=>{
     const id = screen.id
-    const {price_per_day, resolution_height, resolution_width} = screen
+    const {price_per_day, resolution_height, resolution_width, rules} = screen
 
     //Parseamos los valores a enteros
     const pricePerDay = parseInt(price_per_day)
     const resolutionHeight = parseInt(resolution_height)
     const resolutionWidth = parseInt(resolution_width)
+    const rulesString = JSON.stringify(rules)
 
 
     //Realiazamos una llamada a nuestra api
@@ -129,7 +134,8 @@ const updateScreen = async (screen:Screen, token:string):Promise<Screen>=>{
             ...screen,
             price_per_day: pricePerDay,
             resolution_height: resolutionHeight,
-            resolution_width: resolutionWidth
+            resolution_width: resolutionWidth,
+            rules:rulesString
         }),
     })
 
@@ -144,8 +150,11 @@ const updateScreen = async (screen:Screen, token:string):Promise<Screen>=>{
         }
     }
 
-    const data:Screen = await res.json()
-
+    const preData:any = await res.json()
+    const data: Screen = {
+        ...preData,
+        rules: JSON.parse(preData.rules),
+    };
     return data
 }
 

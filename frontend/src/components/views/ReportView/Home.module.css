@@ -1,0 +1,12 @@
+.homeContainer{
+    padding: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.salesContentBox{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}

@@ -1,0 +1,28 @@
+.modal{
+    width: 95%;
+    overflow-y: auto;
+    max-height: 90vh;
+    border-radius: 10px;
+    min-height: 200px;
+    padding-top: 20px !important;
+}
+
+.btnsContainer{
+    margin-top: 30px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+}
+
+.switchContainer{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+}
+
+@media screen and (min-width: 510px){
+    .modal{
+        width: 505px !important;
+    }
+}

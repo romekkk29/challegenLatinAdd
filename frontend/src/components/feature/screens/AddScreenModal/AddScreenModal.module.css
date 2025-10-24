@@ -1,5 +1,8 @@
 .modal{
     width: 95%;
+    overflow-y: auto;
+    max-height: 90vh;
+    border-radius: 10px;
 }
 
 .btnsContainer{
@@ -34,6 +37,25 @@
 .sizeInputsContainer{
     display: flex;
     gap: 5px;
+}
+
+.chipContainer{
+    flex-wrap: wrap;
+}
+
+.chipBox{
+    width: 120px !important
+}
+
+.chip{
+     padding-top:3px !important; 
+     padding-bottom:2px !important; 
+     height: auto !important;
+}
+
+.chip span {
+    display: block; 
+    white-space: normal; 
 }
 
 @media screen and (min-width: 510px){

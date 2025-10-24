@@ -42,8 +42,16 @@ function initializeDatabase() {
             value INTEGER NOT NULL
         );
 
-        INSERT OR IGNORE INTO users (id,email,password,full_name)
-	        VALUES (1,'admin@latinad.com','1234567890','System Admin');
+        -- Nueva tabla: estado de pago (payment_status)
+        CREATE TABLE IF NOT EXISTS payment_status (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            display_id INTEGER NOT NULL,
+            status BOOLEAN NOT NULL DEFAULT 0,
+            FOREIGN KEY (display_id) REFERENCES displays(id)
+        );
+
+        INSERT OR IGNORE INTO users (id, email, password, full_name)
+        VALUES (1, 'admin@latinad.com', '1234567890', 'System Admin');
 
         INSERT INTO sales (date, value)
         SELECT date_val, value_val
@@ -83,6 +91,17 @@ function initializeDatabase() {
         WHERE NOT EXISTS (
             SELECT 1 FROM sales s WHERE s.date = new_data.date_val
         );
+        INSERT  OR IGNORE INTO displays (id, name, description, user_id, price_per_day, resolution_height, resolution_width, type, picture_url, rules)
+        VALUES 
+        (1, 'Display A', 'Outdoor test display', 1, 100.0, 1080, 1920, 'outdoor', 'https://res.cloudinary.com/dbihouiij/image/upload/c_scale,dpr_auto,f_auto,w_auto/v1/SiteImages/0000495_49-air-conditioned-all-weather-display', '[{\"day\":\"Lunes\",\"enable\":false},{\"day\":\"Martes\",\"enable\":true,\"interval\":[{\"from\":\"00:01\",\"to\":\"03:14\"}]},{\"day\":\"Miércoles\",\"enable\":false},{\"day\":\"Jueves\",\"enable\":true,\"interval\":[{\"from\":\"03:12\",\"to\":\"05:21\"},{\"from\":\"15:17\",\"to\":\"22:20\"}]},{\"day\":\"Viernes\",\"enable\":false},{\"day\":\"Sábado\",\"enable\":false},{\"day\":\"Domingo\",\"enable\":false}]'),
+        (2, 'Display B', 'Indoor test display', 1, 120.0, 1080, 1920, 'indoor', 'https://res.cloudinary.com/dbihouiij/image/upload/c_scale,dpr_auto,f_auto,w_auto/v1/SiteImages/0000495_49-air-conditioned-all-weather-display', '[{\"day\":\"Lunes\",\"enable\":false},{\"day\":\"Martes\",\"enable\":true,\"interval\":[{\"from\":\"00:01\",\"to\":\"03:14\"}]},{\"day\":\"Miércoles\",\"enable\":false},{\"day\":\"Jueves\",\"enable\":true,\"interval\":[{\"from\":\"03:12\",\"to\":\"05:21\"},{\"from\":\"15:17\",\"to\":\"22:20\"}]},{\"day\":\"Viernes\",\"enable\":false},{\"day\":\"Sábado\",\"enable\":false},{\"day\":\"Domingo\",\"enable\":false}]'),
+        (3, 'Display C', 'Outdoor test display 2', 1, 90.0, 720, 1280, 'outdoor', 'https://res.cloudinary.com/dbihouiij/image/upload/c_scale,dpr_auto,f_auto,w_auto/v1/SiteImages/0000495_49-air-conditioned-all-weather-display', '[{\"day\":\"Lunes\",\"enable\":false},{\"day\":\"Martes\",\"enable\":true,\"interval\":[{\"from\":\"00:01\",\"to\":\"03:14\"}]},{\"day\":\"Miércoles\",\"enable\":false},{\"day\":\"Jueves\",\"enable\":true,\"interval\":[{\"from\":\"03:12\",\"to\":\"05:21\"},{\"from\":\"15:17\",\"to\":\"22:20\"}]},{\"day\":\"Viernes\",\"enable\":false},{\"day\":\"Sábado\",\"enable\":false},{\"day\":\"Domingo\",\"enable\":false}]');
+        -- Inserts iniciales en la tabla payment_status
+        INSERT OR IGNORE INTO payment_status (id, display_id, status)
+        VALUES 
+            (1, 1, 0),
+            (2, 2, 1),
+            (3, 3, 0);
     `);
 }
 
@@ -319,6 +338,29 @@ app.get('/sales', async (req, res) => {
         console.error(err);
         res.status(500).send('Error getting sales');
     }
+});
+
+// Get payment_status status
+app.get('/payment_status', async (req, res) => {
+  try {
+    const sql = `
+      SELECT d.*
+      FROM payment_status ps
+      INNER JOIN displays d ON ps.display_id = d.id
+      WHERE ps.status = 0
+    `;
+
+    const result = query(sql, []);
+
+    if (!result || result.length === 0) {
+      return res.status(404).send('No displays with pending payments found');
+    }
+
+    res.json(result);
+  } catch (err) {
+    console.error('Error getting payment_status:', err);
+    res.status(500).send('Error getting payment_status');
+  }
 });
 
 // Start app

@@ -1,10 +1,10 @@
 
-import { useAuth } from '@hooks/useAuth'
+import { useAppSelector } from '@hooks/useAuth'
 import { Navigate, Outlet } from 'react-router-dom'
 
 //Este componente nos ayuda a validar la autenticación de las rutas privadas de nuestra app
 const PrivateRoute = () => {
-    const {token} = useAuth()
+    const {token} = useAppSelector(state => state.auth)
     const isAuthenticated = token
 
     //Si el usuario no está autenticado, lo redirigimos a la página de login

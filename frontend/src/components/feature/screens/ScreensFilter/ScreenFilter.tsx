@@ -86,12 +86,14 @@ const ScreenFilter = ({pageSize = 10,onSubmit}:Props) => {
 
     return (
         <div>
+            <div className={styles.btnsFilterContainer}>
             <Button 
                 variant='outlined'
                 startIcon={<FilterAltOutlinedIcon/>}
                 endIcon={filterOpen ? <KeyboardArrowUpIcon/>:<KeyboardArrowDownIcon/>}
                 onClick={toggleFilterOpen}
             >Filtros</Button>
+            </div>
             <Collapse
                 in={filterOpen}
                 timeout='auto'

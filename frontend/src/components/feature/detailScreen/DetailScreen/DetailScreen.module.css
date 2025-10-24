@@ -60,6 +60,27 @@
     margin-top: 15px;
 }
 
+.chipContainer{
+    flex-wrap: wrap;
+    width: 70%;
+}
+
+.chipBox{
+    width: 100px !important
+}
+
+.chip{
+     padding-top:3px !important; 
+     padding-bottom:2px !important; 
+     height: auto !important;
+}
+
+.chip span {
+    display: block; 
+    white-space: normal; 
+}
+
+
 @media screen and (min-width: 768px) {
     .infoContainer{
         flex-direction: row;

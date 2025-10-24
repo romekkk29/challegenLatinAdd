@@ -20,6 +20,10 @@ export default defineConfig({
         replacement: path.resolve(__dirname,"./src/hooks")
       },
       { 
+        find: '@redux',
+        replacement: path.resolve(__dirname,"./src/redux")
+      },
+      { 
         find: '@contexts',
         replacement: path.resolve(__dirname,"./src/contexts")
       },

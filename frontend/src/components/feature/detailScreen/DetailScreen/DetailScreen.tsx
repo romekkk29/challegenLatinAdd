@@ -1,4 +1,4 @@
-import { Button, Chip, Paper, Typography } from '@mui/material'
+import { Button, Chip, Paper, Typography, Box } from '@mui/material'
 import { Screen } from 'types/screen'
 import HeightIcon from '@mui/icons-material/Height';
 import TrendingFlatIcon from '@mui/icons-material/TrendingFlat';
@@ -11,6 +11,8 @@ import AddScreen from '@components/feature/screens/AddScreenModal/AddScreenModal
 import { toast } from 'sonner';
 import DeleteModal from '../DeleteModal/DeleteModal';
 import { formatARS } from '@lib/utils.number';
+import Stack from '@mui/material/Stack';
+import { formatChipValue } from "@lib/utils.string"
 
 type Props = {
     screen:Screen,
@@ -18,7 +20,7 @@ type Props = {
 }
 
 const DetailScreen = ({screen, setScreen}:Props) => {
-    const {id, name, description, price_per_day, resolution_height, resolution_width, type, picture_url} = screen
+    const {id, name, description, price_per_day, resolution_height, resolution_width, type, picture_url,rules} = screen
     //screen hook
     const {deleteScreen, updateScreen} = useScreen()
     //Instanciamos hook de react-router
@@ -119,6 +121,20 @@ const DetailScreen = ({screen, setScreen}:Props) => {
                             <div className={styles.detailItem}>
                                 <Typography variant='overline'>Precio por día</Typography>
                                 <Chip label={formatARS(Number(price_per_day))}/>
+                            </div>                            <div className={styles.detailItem}>
+                                <Typography variant='overline'>Horario de funcionamiento</Typography>
+                                <Stack direction="row" spacing={1} useFlexGap className={styles.chipContainer}>
+                                    {rules?.map((rule)=>        
+                                            <Box key={rule.day} className={styles.chipBox}>
+                                                <Chip
+                                                    className={styles.chip}
+                                                    label={formatChipValue(rule)}
+                                                    color={rule.enable?"success":"error"}
+                                                    variant="outlined"
+                                                />
+                                            </Box>
+                                        )}
+                                </Stack>                            
                             </div>
                         </div>
                     </div>

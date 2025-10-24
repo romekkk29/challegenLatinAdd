@@ -5,6 +5,7 @@
       "@components/*":["./components/*"],
       "@assets/*":["./assets/*"],
       "@hooks/*":["./hooks/*"],
+      "@redux/*":["./redux/*"],
       "@contexts/*":["./contexts/*"],
       "@services/*":["./services/*"],
       "@lib/*":["./lib/*"],

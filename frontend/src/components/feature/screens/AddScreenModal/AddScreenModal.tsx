@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { Alert, Box, Button, Collapse, FormControl, FormHelperText, InputAdornment, InputLabel, MenuItem, Modal, Select, TextField, TextareaAutosize } from "@mui/material"
 import { getModalStyle } from "@lib/utils.misc"
+import { formatChipValue } from "@lib/utils.string"
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import styles from './AddScreenModal.module.css'
@@ -9,7 +11,10 @@ import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import { useAddScreenForm } from "@hooks/useAddScreenForm";
 import { Screen } from "types/screen";
 import { FormEvent } from "react";
-
+import { ScreenAvailableHours } from "types/screen";
+import Chip from '@mui/material/Chip';
+import Stack from '@mui/material/Stack';
+import SetHourAvailable from "./SetHourModal";
 
 type Props = {
     open:boolean,
@@ -18,9 +23,20 @@ type Props = {
     initialValues?: Screen
 }
 
+const initalValuesRules:ScreenAvailableHours[]=[
+    {day:"Lunes",enable:false},
+    {day:"Martes",enable:false},
+    {day:"Miércoles",enable:false},
+    {day:"Jueves",enable:false},
+    {day:"Viernes",enable:false},
+    {day:"Sábado",enable:false},
+    {day:"Domingo",enable:false}
+]
+
 const AddScreen = ({open, handleClose, action, initialValues}:Props) => {
+
     //Extraemos los datos del hook personalzdo
-    const {values, onSubmit, inputErrors, onChange, error, resetValues} = useAddScreenForm({
+    const {values, onSubmit, inputErrors, onChange, error, resetValues,handleSaveDaySelected,openModalSetHour,handleOpenModalSetHour,daySelected,setDaySelected,handleCloseModalSetHour} = useAddScreenForm({
         //Enviamos un objeto initialValues para validar si estamos editando o creando una nueva pantalla
         initialValues: {
             name: initialValues?.name || '',
@@ -28,21 +44,23 @@ const AddScreen = ({open, handleClose, action, initialValues}:Props) => {
             pricePerDay: initialValues?.price_per_day || '',
             resolutionWidth: initialValues?.resolution_width || '',
             resolutionHeight: initialValues?.resolution_height || '',
-            type: initialValues?.type || 'indoor'
+            type: initialValues?.type || 'indoor',
+            rules:initialValues?.rules || initalValuesRules,
         }
     })
 
     const handleSubmit = (event: FormEvent<HTMLFormElement>)=>{
         event.preventDefault()
         onSubmit((values)=>{
-            const {type, resolutionWidth, resolutionHeight, pricePerDay, description, name} = values
+            const {type, resolutionWidth, resolutionHeight, pricePerDay, description, name, rules} = values
             action({
                 name,
                 description,
                 price_per_day: pricePerDay,
                 resolution_height: resolutionHeight,
                 resolution_width: resolutionWidth,
-                type
+                type,
+                rules:rules
             })
             handleClose()
             
@@ -156,6 +174,21 @@ const AddScreen = ({open, handleClose, action, initialValues}:Props) => {
                             <MenuItem value={'outdoor'}>Outdoor</MenuItem>
                         </Select>
                     </FormControl>
+                    <Stack direction="row" spacing={1} useFlexGap className={styles.chipContainer}>
+                        {values.rules?.map((rule)=>        
+                                <Box key={rule.day} className={styles.chipBox}>
+                                    <Chip
+                                        className={styles.chip}
+                                        label={formatChipValue(rule)}
+                                        onClick={()=>handleOpenModalSetHour(rule)}
+                                        onDelete={()=>handleOpenModalSetHour(rule)}
+                                        deleteIcon={<EditIcon />}
+                                        color={rule.enable?"success":"error"}
+                                        variant="outlined"
+                                    />
+                                </Box>
+                            )}
+                    </Stack>
 
                 </div>
                 <footer className={styles.btnsContainer}>
@@ -170,6 +203,7 @@ const AddScreen = ({open, handleClose, action, initialValues}:Props) => {
                     </Button>
                 </footer>
             </form>
+            <SetHourAvailable daySelected={daySelected} setDaySelected={setDaySelected} open={openModalSetHour} handleClose={handleCloseModalSetHour} handleSaveDaySelected={handleSaveDaySelected}></SetHourAvailable>
         </Box>
     </Modal>
   )

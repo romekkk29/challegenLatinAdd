@@ -1,11 +1,11 @@
 import { useCallback, useState } from "react"
 import { QueryParams, Screen, ScreenListResponse } from "../types/screen"
 import { screenService } from "@services/screen"
-import { useAuth } from "./useAuth"
+import {useAppSelector } from '@hooks/useAuth'
 
 const useScreen = () => {
     //Obtenemos el token de nuestra sesión
-    const {token} = useAuth()
+    const { token } = useAppSelector(state => state.auth)
     //State donde se almacenará el error en caso de haber uno
     const [error, setError] = useState<string | null>(null)
     //Controlamos el loading del componente
